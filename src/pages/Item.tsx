@@ -25,7 +25,7 @@ const Item = () => {
     const [itemDetails, setItemDetails] = useState()
     const location = useLocation()
     useEffect(() => {
-        axios.get(`http://${process.env.REACT_APP_API_URL}${location.pathname}`)
+        axios.get(`https://${process.env.REACT_APP_API_URL}${location.pathname}`)
         .then(res=>{
             setItemDetails(res.data)
         })

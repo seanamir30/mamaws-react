@@ -17,7 +17,7 @@ const LoginForm = ({ setIsModalOpen }: AuthModalProps) => {
       email: email.current?.value,
       password: password.current?.value,
     }
-    axios.post(`http://${process.env.REACT_APP_API_URL}/users/sign_in`,{ user })
+    axios.post(`https://${process.env.REACT_APP_API_URL}/users/sign_in`,{ user })
     .then(response => {
       if (!response.data.error){
         const user = {
