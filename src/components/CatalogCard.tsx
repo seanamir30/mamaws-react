@@ -40,7 +40,7 @@ type item = {
 const CatalogCard = ({item}: item) => {
   const navigate = useNavigate()
   return (
-    <CatalogCardWrapper onClick={()=>{navigate(`/item/${item._id.$oid}`)}}>
+    <CatalogCardWrapper onClick={()=>{navigate(`/items/${item._id.$oid}`)}}>
         <ImageContainer/>
         <p>{item.title}</p>
         <p>{item.price}</p>
