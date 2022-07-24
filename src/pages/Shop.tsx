@@ -1,6 +1,7 @@
-import React from 'react'
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 import styled from 'styled-components'
-import ItemCard from '../components/ItemCard'
+import CatalogCard from '../components/CatalogCard'
 
 const ShopWrapper = styled.div`
     display: flex;
@@ -65,10 +66,19 @@ const Catalog = styled.div`
     justify-content: space-around;
     gap: 5rem;
 
-    
+
 `
 
 const Shop = () => {
+    const [items, setItems] = useState([])
+
+    useEffect(() => {
+      axios.get(`http://${process.env.REACT_APP_API_URL}/items`)
+      .then(res =>{
+        setItems(res.data)
+      })
+    }, [])
+    
   return (
     <ShopWrapper>
         <ShopNav>
@@ -89,16 +99,9 @@ const Shop = () => {
             </div>
         </ShopNav>
         <Catalog>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
-            <ItemCard/>
+            {items.map((item)=>(
+                <CatalogCard item={item}/>
+            ))}
         </Catalog>
     </ShopWrapper>  
   )

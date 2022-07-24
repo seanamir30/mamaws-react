@@ -1,11 +1,14 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import userReducer from '../features/user/userSlice';
 import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
+// @ts-ignore
+import { CookieStorage } from 'redux-persist-cookie-storage'
+// @ts-ignore
+import Cookies from 'cookies-js'
 
 const persistConfig = {
   key: 'auth',
-  storage: storage,
+  storage: new CookieStorage(Cookies),
 }
 
 export const store = configureStore({
