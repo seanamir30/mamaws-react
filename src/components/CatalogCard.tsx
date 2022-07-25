@@ -20,7 +20,7 @@ const ImageContainer = styled.div`
     padding-bottom: 1.125rem;
 `
 
-type itemType = {
+export type itemType = {
   _id:{
     $oid: String
   },
