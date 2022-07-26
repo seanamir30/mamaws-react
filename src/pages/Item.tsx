@@ -131,7 +131,7 @@ const Item = () => {
     }
 
     useEffect(() => {
-        axios.get(`http://${process.env.REACT_APP_API_URL}${location.pathname}`)
+        axios.get(`https://${process.env.REACT_APP_API_URL}${location.pathname}`)
         .then(res=>{
             setItemDetails(res.data)
             setInputTitle(res.data.title)
@@ -144,7 +144,7 @@ const Item = () => {
     }, [location.pathname, isEditMode])
 
     const handleDelete = (id?: String) => {
-        axios.delete(`http://${process.env.REACT_APP_API_URL}/items/${id}`)
+        axios.delete(`https://${process.env.REACT_APP_API_URL}/items/${id}`)
         .then(response =>{
           navigate('/shop')
         })
@@ -153,7 +153,7 @@ const Item = () => {
       const handleSubmit = (id?: String, e?: FormEvent) => {
         e?.preventDefault()
         console.log(item)
-        axios.patch(`http://${process.env.REACT_APP_API_URL}/items/${id}`, {item: item})
+        axios.patch(`https://${process.env.REACT_APP_API_URL}/items/${id}`, {item: item})
         .then((res)=>{
             console.log(res.data)
             setIsEditMode(false)
@@ -162,7 +162,7 @@ const Item = () => {
 
       const handleAddToCart = (e?: FormEvent) => {
         e?.preventDefault()
-        axios.post(`http://${process.env.REACT_APP_API_URL}/cart`, {
+        axios.post(`https://${process.env.REACT_APP_API_URL}/cart`, {
             cart: {
                 item_id: itemId,
                 user_id: user.id,

@@ -128,7 +128,7 @@ const Item = () => {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault()
-        axios.post(`http://${process.env.REACT_APP_API_URL}/items`, {item: item})
+        axios.post(`https://${process.env.REACT_APP_API_URL}/items`, {item: item})
         .then(()=>navigate(`/shop`))
     }
 
