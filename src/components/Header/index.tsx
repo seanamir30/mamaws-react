@@ -15,6 +15,7 @@ const InfoSection = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  font-weight: bold;
 `;
 
 const Navigation = styled.div`
@@ -24,6 +25,7 @@ const Navigation = styled.div`
   background: white;
   padding-left: 10.5rem;
   padding-right: 10.5rem;
+  font-weight: bolder;
   .left {
     width: 100%;
     display: flex;
@@ -75,7 +77,7 @@ const Header = () => {
           <img className='logo' src='/logo.svg' alt='logo'/>
           <Link to='/'>HOME</Link>
           <Link to='/shop'>SHOP</Link>
-          <Link to='#'>ABOUT</Link>
+          <Link to='/About'>ABOUT</Link>
           <Link to='#'>CONTACT</Link>
         </div>
         <div className='right'>

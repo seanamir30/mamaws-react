@@ -5,6 +5,8 @@ import Footer from "./components/Footer";
 import Shop from "./pages/Shop";
 import Item from "./pages/Item";
 import AddItem from "./pages/AddItem";
+import About from "./pages/About";
+import Profile from "./pages/Profile";
 import './App.css';
 
 function App() {
@@ -16,6 +18,8 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/add-item" element={<AddItem />} />
         <Route path="/items/:itemId" element={<Item/>} />
+        <Route path="/about" element={<About/>} />
+        <Route path="/profile" element={<Profile/>} />
       </Routes>
       <Footer/>
     </div>
