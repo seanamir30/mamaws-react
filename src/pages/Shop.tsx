@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import styled from 'styled-components'
 import CatalogCard from '../components/CatalogCard'
+import { Link } from 'react-router-dom';
 
 const ShopWrapper = styled.div`
     display: flex;
@@ -73,7 +74,7 @@ const Shop = () => {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-      axios.get(`https://${process.env.REACT_APP_API_URL}/items`)
+      axios.get(`http://${process.env.REACT_APP_API_URL}/items`)
       .then(res =>{
         setItems(res.data)
       })
@@ -81,6 +82,7 @@ const Shop = () => {
     
   return (
     <ShopWrapper>
+        <Link to='/add-item'>Add Item</Link>
         <ShopNav>
             <div className='categories-container'>
                 <div className='header'>CATEGORY</div>

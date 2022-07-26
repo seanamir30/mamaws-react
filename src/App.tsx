@@ -7,6 +7,7 @@ import Item from "./pages/Item";
 import AddItem from "./pages/AddItem";
 import About from "./pages/About";
 import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
 import './App.css';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/items/:itemId" element={<Item/>} />
         <Route path="/about" element={<About/>} />
         <Route path="/profile" element={<Profile/>} />
+        <Route path="/cart" element={<Cart/>} />
       </Routes>
       <Footer/>
     </div>

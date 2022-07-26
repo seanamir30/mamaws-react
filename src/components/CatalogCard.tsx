@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router'
+import axios from 'axios'
 
 const CatalogCardWrapper = styled.div`
     width: 17.25rem;
@@ -26,11 +27,11 @@ export type itemType = {
   },
   created_at: String,
   description: String,
-  price: Float32Array,
-  quantity: BigInteger,
+  price: number,
+  quantity: number,
   title: String,
   updated_at: String,
-  sold: BigInteger
+  sold: number
 }
 
 type item = {
@@ -39,6 +40,8 @@ type item = {
 
 const CatalogCard = ({item}: item) => {
   const navigate = useNavigate()
+
+
   return (
     <CatalogCardWrapper onClick={()=>{navigate(`/items/${item._id.$oid}`)}}>
         <ImageContainer/>

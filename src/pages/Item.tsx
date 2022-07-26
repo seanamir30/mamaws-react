@@ -1,9 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, FormEvent } from 'react'
 import { useLocation } from 'react-router'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import axios from 'axios'
 import { itemType } from '../components/CatalogCard'
+import { useNavigate } from 'react-router'
+import { useSelector } from 'react-redux'
+import { RootState } from '../app/store'
 
 const Container = styled.div`
     display: flex;
@@ -107,36 +110,93 @@ const Container = styled.div`
  
 const Item = () => {
     const [itemDetails, setItemDetails] = useState<itemType>()
+    const [isEditMode, setIsEditMode] = useState<boolean>(false)
+    const { user } = useSelector((store: RootState) => store.user);
     const location = useLocation()
+    const navigate = useNavigate()
+
+    const [inputTitle, setInputTitle] = useState<String>()
+    const [inputQuantity, setInputQuantity] = useState<String>()
+    const [inputDescription, setInputDescription] = useState<String>()
+    const [inputPrice, setInputPrice] = useState<String>()
+    const [itemId, setItemId] = useState<String>()
+    const [sold, setSold] = useState<number>()
+
+    const item = {
+        "title": inputTitle,
+        "quantity": inputQuantity,
+        "description": inputDescription,
+        "price": inputPrice,
+        "sold": sold,
+    }
+
     useEffect(() => {
-        axios.get(`https://${process.env.REACT_APP_API_URL}${location.pathname}`)
+        axios.get(`http://${process.env.REACT_APP_API_URL}${location.pathname}`)
         .then(res=>{
             setItemDetails(res.data)
+            setInputTitle(res.data.title)
+            setInputQuantity(res.data.quantity)
+            setInputDescription(res.data.description)
+            setInputPrice(res.data.price)
+            setSold(res.data.sold)
+            setItemId(res.data._id.$oid)
         })
-    }, [location.pathname])
+    }, [location.pathname, isEditMode])
+
+    const handleDelete = (id?: String) => {
+        axios.delete(`http://${process.env.REACT_APP_API_URL}/items/${id}`)
+        .then(response =>{
+          navigate('/shop')
+        })
+      }
     
+      const handleSubmit = (id?: String, e?: FormEvent) => {
+        e?.preventDefault()
+        console.log(item)
+        axios.patch(`http://${process.env.REACT_APP_API_URL}/items/${id}`, {item: item})
+        .then((res)=>{
+            console.log(res.data)
+            setIsEditMode(false)
+        })
+      }
+
+      const handleAddToCart = (e?: FormEvent) => {
+        e?.preventDefault()
+        axios.post(`http://${process.env.REACT_APP_API_URL}/cart`, {
+            cart: {
+                item_id: itemId,
+                user_id: user.id,
+            }
+        },{
+            headers: {
+                Authorization: user.token
+            }
+        })
+      }
 
   return (
     <Container>
         <div className='backContainer'><Link to='/shop' className='back'>Back</Link></div>
+        <button className='bg-white' onClick={()=>{handleDelete(itemDetails?._id.$oid)}}>delete</button>
+        <button className='bg-white' onClick={()=>{setIsEditMode(!isEditMode)}}>edit</button>
         <div className='baseCard'>
             <div className='itemBaseCard'>
                 <div className='itemCard'></div>
             </div>
 
-            <div className='item'>
-                <div className='itemName'>{itemDetails?.title}</div>
+            <form className='item' onSubmit={(e)=>{handleSubmit(itemDetails?._id.$oid,e)}}>
+                <div className='itemName'>{isEditMode ?  <input type="text" placeholder='title' onChange={(event)=>{setInputTitle(event.target.value)}} value={String(inputTitle)} className='itemName'/> : itemDetails?.title}</div>
                 <div className='row'>
                     <div className='itemSold'>{itemDetails?.sold?`${itemDetails?.sold} Sold`: <></>}</div>
-                    <div className='itemStock'>{itemDetails?.quantity} Stock</div>
+                    <div className='itemStock'>{isEditMode ? <input type="number" placeholder='quantity' onChange={(event)=>{setInputQuantity(event.target.value)}} value={String(inputQuantity)} className='itemStock'/> : itemDetails?.quantity} Stock</div>
                 </div>
                     
-                <div className='itemDescription'>{itemDetails?.description}</div>
+                <div className='itemDescription'>{isEditMode ? <textarea placeholder='description' onChange={(event)=>{setInputDescription(event.target.value)}} value={String(inputDescription)} className='itemDescription'/> : itemDetails?.description}</div>
                 <div className='row'>
-                    <div className='itemPrice'>₱{itemDetails?.price}</div>
-                    <Link to='#' className='addToCart'>Add to Cart</Link>
+                    <div className='itemPrice'>₱{isEditMode ? <input type="number" placeholder='price' onChange={(event)=>{setInputPrice(event.target.value)}} value={String(inputPrice)} className='itemPrice'/> : itemDetails?.price}</div>
+                    {isEditMode ? <button className='bg-white'>Done</button> : <button onClick={(e)=>{handleAddToCart(e)}} className='addToCart'>Add to Cart</button>}
                 </div>
-            </div>
+            </form>
         </div>
     </Container>
 

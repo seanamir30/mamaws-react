@@ -1,10 +1,8 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
-import { useLocation } from 'react-router'
+import { FormEvent, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import axios from 'axios'
-import { itemType } from '../components/CatalogCard'
 
 
 const Container = styled.div`
@@ -114,34 +112,51 @@ const Container = styled.div`
 `
 
 const Item = () => {
+    const [inputTitle, setInputTitle] = useState<String>('')
+    const [inputQuantity, setInputQuantity] = useState<String>()
+    const [inputDescription, setInputDescription] = useState<String>('')
+    const [inputPrice, setInputePrice] = useState<String>()
+    const navigate = useNavigate()
 
-    
+    const item = {
+        "title": inputTitle,
+        "quantity": inputQuantity,
+        "description": inputDescription,
+        "price": inputPrice,
+        "sold": 0,
+    }
 
-  return (
-    <Container>
-        <div className='backContainer'><Link to='/shop' className='back'>Back</Link></div>
-        <div className='baseCard'>
-            <div className='itemBaseCard'>
-                <div className='itemCard'></div>
-            </div>
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault()
+        axios.post(`http://${process.env.REACT_APP_API_URL}/items`, {item: item})
+        .then(()=>navigate(`/shop`))
+    }
 
-            <div className='item'>
-                <input type="text" className='itemName'/>
-                <div className='stockRow'>
-                    <input type="text" className='itemStock'/>
+    return (
+        <Container>
+            <div className='backContainer'><Link to='/shop' className='back'>Back</Link></div>
+            <div className='baseCard'>
+                <div className='itemBaseCard'>
+                    <div className='itemCard'></div>
                 </div>
-                    
-                <textarea className='itemDescription'/>
-                <div className='row'>
-                    <input type="text" className='itemPrice'/>
-                    <Link to='#' className='addToCart'>Add Item</Link>
-                </div>
+
+                <form className='item' onSubmit={(e)=>{handleSubmit(e)}}>
+                    <input type="text" placeholder='title' onChange={(e)=>{setInputTitle(e.target.value)}} value={String(inputTitle)} className='itemName'/>
+                    <div className='stockRow'>
+                        <input type="number" placeholder='quantity' onChange={(e)=>{setInputQuantity(e.target.value)}} value={String(inputQuantity)} className='itemStock'/>
+                    </div>
+                        
+                    <textarea placeholder='description' onChange={(e)=>{setInputDescription(e.target.value)}} value={String(inputDescription)} className='itemDescription'/>
+                    <div className='row'>
+                        <input type="number" placeholder='price' onChange={(e)=>{setInputePrice(e.target.value)}} value={String(inputPrice)} className='itemPrice'/>
+                        <button type="submit" className='addToCart'>Add Item</button>
+                    </div>
+                </form>
             </div>
-        </div>
-    </Container>
+        </Container>
 
 
-  )
+    )
 }
 
 export default Item
