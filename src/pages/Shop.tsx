@@ -74,7 +74,7 @@ const Shop = () => {
     const [items, setItems] = useState([])
 
     useEffect(() => {
-      axios.get(`https://${process.env.REACT_APP_API_URL}/items`)
+      axios.get(`${process.env.REACT_APP_API_URL}/api/v1/items`)
       .then(res =>{
         setItems(res.data)
       })

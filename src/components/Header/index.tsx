@@ -4,6 +4,8 @@ import AuthModal from '../AuthModal'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../app/store'
 import { Link } from 'react-router-dom'
+import { Mode } from '../AuthModal'
+import { useNavigate } from 'react-router'
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -61,11 +63,19 @@ const Navigation = styled.div`
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState<Boolean>(false)
+  const [authMode, setAuthMode] = useState<Mode>('signup')
   const { user } = useSelector((store: RootState) => store.user);
+  const navigate = useNavigate()
+  
+  const handleAuthClick = (mode: 'signup'|'login') => {
+    setAuthMode(mode)
+    setIsModalOpen(true)
+    console.log(mode)
+  }
 
   return (
     <HeaderWrapper>
-      {isModalOpen ? <AuthModal setIsModalOpen={setIsModalOpen}/> : <></>}
+      {isModalOpen ? <AuthModal setIsModalOpen={setIsModalOpen} authMode={authMode}/> : <></>}
       <InfoSection>
         <div>0917-128-5250</div>
         <div>facebook.com/MamawsClown</div>
@@ -81,8 +91,9 @@ const Header = () => {
           <Link to='#'>CONTACT</Link>
         </div>
         <div className='right'>
-          {user.email ? user.email : <></>}
-          <div role={'button'} onClick={()=>{setIsModalOpen(true)}}><img className='user-icon' src='/user.svg'/></div>
+          {user.email ? (
+            <><span>{user.email}</span><div role={'button'} onClick={()=>{navigate('/profile')}}><img className='user-icon' src='/user.svg'/></div></>
+            ) : <><button onClick={()=>{handleAuthClick('signup')}}>Sign Up</button> | <button onClick={()=>{handleAuthClick('login')}}>Login</button></>}
           <div role={'button'}><img className='cart-icon' src='/cart.svg'/></div>
         </div>
       </Navigation>

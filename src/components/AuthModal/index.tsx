@@ -1,13 +1,19 @@
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import styled from 'styled-components'
 import Login from './LoginForm'
 import Signup from './SignupForm'
 
-export type AuthModalProps = {
-  setIsModalOpen: (value: boolean) => void
+
+export type Mode = 'signup' | 'login';
+
+export type FormModeProps = {
+  setIsModalOpen: (value: boolean) => void,
 }
 
-type Mode = 'signup' | 'login';
+type AuthModalProps = {
+  setIsModalOpen: (value: boolean) => void,
+  authMode: Mode
+}
 
 type ButtonProps = {
   mode: Mode;
@@ -74,8 +80,13 @@ const Outside = styled.div`
   width: 100%;
 `;
 
-const AuthModal = ({setIsModalOpen}: AuthModalProps) => {
+const AuthModal = ({setIsModalOpen, authMode}: AuthModalProps) => {
   const [mode, setMode] = useState<Mode>('signup')
+
+  useEffect(() => {
+    setMode(authMode)
+  }, [authMode])
+  
 
   return (
     <Container>

@@ -3,9 +3,9 @@ import { Form } from './AuthModal.style'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../../features/user/userSlice'
 import axios from 'axios'
-import { AuthModalProps } from '.'
+import { FormModeProps } from '.'
 
-const LoginForm = ({ setIsModalOpen }: AuthModalProps) => {
+const LoginForm = ({ setIsModalOpen }: FormModeProps) => {
   const dispatch = useDispatch()
   const email = useRef<HTMLInputElement>(null);
   const password = useRef<HTMLInputElement>(null);
@@ -17,21 +17,20 @@ const LoginForm = ({ setIsModalOpen }: AuthModalProps) => {
       email: email.current?.value,
       password: password.current?.value,
     }
-    axios.post(`https://${process.env.REACT_APP_API_URL}/users/sign_in`,{ user })
+    axios.post(`${process.env.REACT_APP_API_URL}/users/sign_in`,{ user })
     .then(response => {
-      if (!response.data.error){
         const user = {
-          token: response.data.token,
+          token: response.headers.authorization,
           email: response.data.user.email,
           first_name: response.data.user.first_name,
           last_name: response.data.user.last_name,
           is_admin: response.data.user.is_admin,
-          id: response.data.user._id.$oid
+          id: response.data.user.id
         }
         dispatch(setUser(user))
         setIsModalOpen(false)
       }
-    })
+    )
   }
 
   return (
