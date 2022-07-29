@@ -94,7 +94,7 @@ const Header = () => {
           {user.email ? (
             <><span>{user.email}</span><div role={'button'} onClick={()=>{navigate('/profile')}}><img className='user-icon' src='/user.svg'/></div></>
             ) : <><button onClick={()=>{handleAuthClick('signup')}}>Sign Up</button> | <button onClick={()=>{handleAuthClick('login')}}>Login</button></>}
-          <div role={'button'}><img className='cart-icon' src='/cart.svg'/></div>
+          <div role={'button'} onClick={()=>{navigate('/cart')}}><img className='cart-icon' src='/cart.svg'/></div>
         </div>
       </Navigation>
     </HeaderWrapper>

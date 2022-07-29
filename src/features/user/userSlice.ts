@@ -6,7 +6,7 @@ const initialState = {
         first_name: '',
         last_name: '',
         token: '',
-        is_admin: '',
+        is_admin: false,
         id: '',
     }
 }

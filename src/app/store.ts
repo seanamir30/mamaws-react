@@ -1,5 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
 import userReducer from '../features/user/userSlice';
+import cartReducer from '../features/cart/cartSlice';
 import { persistStore, persistReducer } from 'redux-persist'
 // @ts-ignore
 import { CookieStorage } from 'redux-persist-cookie-storage'
@@ -11,9 +12,15 @@ const persistConfig = {
   storage: new CookieStorage(Cookies),
 }
 
+const persistCartConfig = {
+  key: 'cart',
+  storage: new CookieStorage(Cookies),
+}
+
 export const store = configureStore({
   reducer: {
     user: persistReducer(persistConfig,userReducer),
+    cartItems: cartReducer
   },
 });
 

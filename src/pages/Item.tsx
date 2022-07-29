@@ -5,8 +5,11 @@ import styled from 'styled-components'
 import axios from 'axios'
 import { itemType } from '../components/CatalogCard'
 import { useNavigate } from 'react-router'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from '../app/store'
+import { setCartItems } from '../features/cart/cartSlice'
+import { cart } from './Cart'
+import _ from 'lodash'
 
 const Container = styled.div`
     display: flex;
@@ -107,21 +110,29 @@ const Container = styled.div`
     }
     
 `
+
+type merger = {
+    api_v1_item_id: String,
+    quantity: number
+}
  
 const Item = () => {
     const [itemDetails, setItemDetails] = useState<itemType>()
     const [isEditMode, setIsEditMode] = useState<boolean>(false)
     const { user } = useSelector((store: RootState) => store.user);
+    const { cartItems } = useSelector((store: RootState) => store.cartItems);
     const location = useLocation()
     const navigate = useNavigate()
-
+    const dispatch = useDispatch()
     const [inputTitle, setInputTitle] = useState<String>()
     const [inputQuantity, setInputQuantity] = useState<String>()
     const [inputDescription, setInputDescription] = useState<String>()
     const [inputPrice, setInputPrice] = useState<String>()
     const [itemId, setItemId] = useState<String>()
     const [sold, setSold] = useState<number>()
-
+    const [purchaseQuantity, setPurchaseQuantity] = useState<number>(0)
+    
+    const id = location.pathname.split('/')[2]
     const item = {
         "title": inputTitle,
         "quantity": inputQuantity,
@@ -131,7 +142,7 @@ const Item = () => {
     }
 
     useEffect(() => {
-        axios.get(`${process.env.REACT_APP_API_URL}${location.pathname}`)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/v1/items/${id}`)
         .then(res=>{
             setItemDetails(res.data)
             setInputTitle(res.data.title)
@@ -142,6 +153,20 @@ const Item = () => {
             setItemId(res.data.id)
         })
     }, [location.pathname, isEditMode])
+
+    //@ts-ignore
+    function mergeById(arr) {
+        return {
+            //@ts-ignore
+          with: function(arr2) {
+              //@ts-ignore
+            return _.map(arr, item => {
+                //@ts-ignore
+              return _.find(arr2, obj => obj.api_v1_item_id === item.api_v1_item_id) || item
+            })
+          }
+        }
+      }
 
     const handleDelete = (id?: String) => {
         axios.delete(`${process.env.REACT_APP_API_URL}/items/${id}`)
@@ -162,29 +187,54 @@ const Item = () => {
 
       const handleAddToCart = (e?: FormEvent) => {
         e?.preventDefault()
-        axios.post(`${process.env.REACT_APP_API_URL}/cart`, {
-            cart: {
-                item_id: itemId,
-                user_id: user.id,
-            }
-        },{
-            headers: {
-                Authorization: user.token
-            }
-        })
+
+        const item = cartItems.find(x => x.api_v1_item_id === itemId)
+        console.log(item)
+        if(item){
+            axios.patch(`${process.env.REACT_APP_API_URL}/api/v1/carts/${item.id}`, {
+                api_v1_cart: {
+                    api_v1_item_id: itemId,
+                    quantity: item.quantity + purchaseQuantity,
+                }
+            },{
+                headers: {
+                    Authorization: user.token
+                }
+            })
+            .then(res=>{
+                dispatch(setCartItems(mergeById(cartItems).with([res.data])))
+            })
+        } else {
+            axios.post(`${process.env.REACT_APP_API_URL}/api/v1/carts`, {
+                api_v1_cart: {
+                    api_v1_item_id: itemId,
+                    quantity: purchaseQuantity,
+                }
+            },{
+                headers: {
+                    Authorization: user.token
+                }
+            }).then((res)=>{
+                dispatch(setCartItems([...cartItems, res.data]))
+            })
+        }
       }
 
   return (
     <Container>
         <div className='backContainer'><Link to='/shop' className='back'>Back</Link></div>
-        <button className='bg-white' onClick={()=>{handleDelete(itemDetails?._id.$oid)}}>delete</button>
-        <button className='bg-white' onClick={()=>{setIsEditMode(!isEditMode)}}>edit</button>
+        { user.is_admin && (
+            <>
+            <button className='bg-white' onClick={()=>{handleDelete(itemDetails?.id)}}>delete</button>
+            <button className='bg-white' onClick={()=>{setIsEditMode(!isEditMode)}}>edit</button>
+            </>
+        )}
         <div className='baseCard'>
             <div className='itemBaseCard'>
                 <div className='itemCard'></div>
             </div>
 
-            <form className='item' onSubmit={(e)=>{handleSubmit(itemDetails?._id.$oid,e)}}>
+            <form className='item' onSubmit={(e)=>{handleSubmit(itemDetails?.id,e)}}>
                 <div className='itemName'>{isEditMode ?  <input type="text" placeholder='title' onChange={(event)=>{setInputTitle(event.target.value)}} value={String(inputTitle)} className='itemName'/> : itemDetails?.title}</div>
                 <div className='row'>
                     <div className='itemSold'>{itemDetails?.sold?`${itemDetails?.sold} Sold`: <></>}</div>
@@ -194,6 +244,7 @@ const Item = () => {
                 <div className='itemDescription'>{isEditMode ? <textarea placeholder='description' onChange={(event)=>{setInputDescription(event.target.value)}} value={String(inputDescription)} className='itemDescription'/> : itemDetails?.description}</div>
                 <div className='row'>
                     <div className='itemPrice'>₱{isEditMode ? <input type="number" placeholder='price' onChange={(event)=>{setInputPrice(event.target.value)}} value={String(inputPrice)} className='itemPrice'/> : itemDetails?.price}</div>
+                    {!isEditMode && <input type="number" value={purchaseQuantity} onChange={(e)=>{setPurchaseQuantity(e.target.valueAsNumber)}}/>}
                     {isEditMode ? <button className='bg-white'>Done</button> : <button onClick={(e)=>{handleAddToCart(e)}} className='addToCart'>Add to Cart</button>}
                 </div>
             </form>

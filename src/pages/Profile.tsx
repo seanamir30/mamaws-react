@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import { RootState } from '../app/store'
 
 const Container = styled.div`
     display:flex;
@@ -60,6 +61,8 @@ const Container = styled.div`
 
 const Profile = () => {
 
+    const { user } = useSelector((store: RootState) => store.user)
+
     return (
         <Container>
             <div className="profileCard">
@@ -74,8 +77,8 @@ const Profile = () => {
                             </form>
                     </div>
                     <div className="right">
-                        <div className="name">Juan Dela Cruz</div>
-                        <div className="email">juandelacruz@gmail.com</div>
+                        <div className="name">{user.first_name} {user.last_name}</div>
+                        <div className="email">{user.email}</div>
                     </div>
                 </div>
                     

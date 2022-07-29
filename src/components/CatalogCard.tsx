@@ -22,16 +22,14 @@ const ImageContainer = styled.div`
 `
 
 export type itemType = {
-  _id:{
-    $oid: String
-  },
-  created_at: String,
+  id: String,
   description: String,
   price: number,
-  quantity: number,
   title: String,
+  quantity: number,
+  sold: number,
   updated_at: String,
-  sold: number
+  created_at: String,
 }
 
 type item = {
@@ -43,7 +41,7 @@ const CatalogCard = ({item}: item) => {
 
 
   return (
-    <CatalogCardWrapper onClick={()=>{navigate(`/items/${item._id.$oid}`)}}>
+    <CatalogCardWrapper onClick={()=>{navigate(`/items/${item.id}`)}}>
         <ImageContainer/>
         <p>{item.title}</p>
         <p>{item.price}</p>
