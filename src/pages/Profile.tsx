@@ -7,18 +7,20 @@ const Container = styled.div`
     display:flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 10rem;
+    margin-top: 8rem;
     margin-bottom: 10rem;
 
     .profileCard{
         display: flex;
         flex-direction: column;
-        width: 35rem;
+        width: 40rem;
         background: white;
         background: rgba(255, 255, 255, 0.8);
         border-radius: 15px;
-        padding: 1rem;
-        padding-bottom: 3rem;
+        padding-top: 3rem;
+        padding-bottom: 5rem;
+        padding-left 3rem;
+        padding-right: 3rem;
     }
 
     .account{
@@ -41,7 +43,7 @@ const Container = styled.div`
     .row{
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: flex-start;
         align-items: center;
     }
 
@@ -56,7 +58,26 @@ const Container = styled.div`
         padding-bottom: 2rem;
     }
 
+    .addressContainer{
+        display: flex;
+        flex-direction: column;
+        height:6rem;
+        justify-content: space-between;
+        padding-top: 1rem;
 
+        .address{
+            border-radius: 5px;
+            height: 2rem;
+            font-size: 1.2em;
+        }
+    }
+
+    .logoutButton{
+        display: flex;
+        justify-content: flex-end;
+        font-size: 1.2em;
+    }
+    
 `
 
 const Profile = () => {
@@ -81,8 +102,15 @@ const Profile = () => {
                         <div className="email">{user.email}</div>
                     </div>
                 </div>
-                    
+
+                <div className="addressContainer">
+                    <span className="addressHeader">Add Address</span>
+                    <input type="text" className="address" placeholder='Street Name, Building, House No., Barangay No.'/>
+                    <button className='submitAddress'>Submit Address</button>
+                </div>
+                <button className='logoutButton'>Logout</button>
             </div>
+
         </Container>
     )
 }
