@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router'
 import axios from 'axios'
 
 const CatalogCardWrapper = styled.div`
-    width: 17.25rem;
-    height: 21.625rem;
+    width: 14rem;
+    height: 20rem;
     background: rgba(255, 255, 255, 0.5);
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 0.313rem;
@@ -15,10 +15,16 @@ const CatalogCardWrapper = styled.div`
 `
 
 const ImageContainer = styled.div`
-    height: 11.875rem;
-    width: 15.625rem;
-    background: #D9D9D9;
-    padding-bottom: 1.125rem;
+    display: flex;
+    justify-content: center;
+
+    .image{
+      display: flex;
+      height: 10rem;
+      width: 12rem;
+      background: #D9D9D9;
+      padding-bottom: 1.125rem;
+    }
 `
 
 export type itemType = {
@@ -44,7 +50,7 @@ const CatalogCard = ({item}: item) => {
 
   return (
     <CatalogCardWrapper onClick={()=>{navigate(`/items/${item._id.$oid}`)}}>
-        <ImageContainer/>
+        <ImageContainer><div className="image"></div></ImageContainer>
         <p>{item.title}</p>
         <p>{item.price}</p>
         <p>{item.sold}</p>

@@ -80,7 +80,7 @@ const Footer = () => {
                 <div className='left'>
                     <MyAccount>
                         <span className='bold'>My Account</span>
-                        <Link to='#'>Profile</Link>
+                        <Link to='/profile'>Profile</Link>
                         <Link to='#'>Shopping Cart</Link>
                     </MyAccount>
                     <Sitemap>
@@ -104,7 +104,6 @@ const Footer = () => {
 
         <div className='copyright'>© Copyright 2022 Mamaw’s Clown and Party Needs</div>
     </FooterWrapper>
-
   )
 }
 
